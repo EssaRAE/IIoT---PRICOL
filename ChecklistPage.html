@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CNC Machine Checklist</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f4f6fb;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: #232f3e;
+      color: #fff;
+      padding: 24px 40px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .main {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+    .sidebar {
+      background: #2e4057;
+      color: #fff;
+      width: 220px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.07);
+    }
+    .sidebar h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar ul li {
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .sidebar ul li:hover {
+      color: #ffd369;
+    }
+    .dashboard-content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      min-height: 0;
+    }
+    .checklist-card {
+      background: #f8f9fa;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(44,62,80,0.04);
+      padding: 16px 12px;
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      min-height: 0;
+      box-sizing: border-box;
+      border: 1px solid #e0e3e7;
+      margin-left: 0;
+    }
+    .machine-details {
+      width: 100%;
+      background: #f4f6fb;
+      border-radius: 2px;
+      padding: 6px 8px;
+      box-shadow: none;
+      font-size: 0.97rem;
+      color: #232f3e;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 6px;
+      border: 1px solid #e0e3e7;
+    }
+    .machine-details span {
+      font-weight: 700;
+      color: #4e54c8;
+    }
+    .checklist-progress {
+      width: 100%;
+      margin-bottom: 6px;
+      text-align: left;
+      font-size: 0.97rem;
+      color: #232f3e;
+      font-weight: 500;
+      padding-left: 0;
+    }
+    .checklist-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.97rem;
+      background: #f8f9fa;
+      border-radius: 2px;
+      padding: 4px 6px;
+      box-shadow: none;
+      border: 1px solid #e0e3e7;
+      transition: background 0.2s;
+    }
+    .checklist-item input[type='checkbox'] {
+      accent-color: #232f3e;
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+    }
+    .checklist-item i {
+      color: #7b809a;
+      font-size: 1rem;
+      margin-right: 4px;
+    }
+    .proceed-btn {
+      width: 100%;
+      padding: 8px 0;
+      border-radius: 2px;
+      border: none;
+      background: #232f3e;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.97rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .proceed-btn:disabled {
+      background: #b0b3b8;
+      cursor: not-allowed;
+    }
+    @media (max-width: 900px) {
+      .main { flex-direction: column; }
+      .sidebar { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 4px; }
+      .dashboard-content { padding: 6px; }
+      .checklist-card { max-width: 98vw; padding: 8px 2vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span>🛠 Machine Checklist</span>
+    <span id="currentTime"></span>
+  </div>
+  <div class="main">
+    <nav class="sidebar">
+      <div>
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="homepage.html" style="color:inherit;text-decoration:none;">Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <span style="font-size:0.95rem;" id="loginStatus">Logged in as <strong>Admin</strong></span>
+      </div>
+    </nav>
+    <div class="dashboard-content">
+      <div class="checklist-card">
+  <h3 style="margin-bottom:12px;" id="checklistLegend">Checklist</h3>
+        <div class="machine-details">
+          <div><strong>Operator ID:</strong> <span id="operatorId"></span></div>
+          <div><strong>Location:</strong> Shop Floor 2</div>
+          <div><strong>Model:</strong> XTR-500</div>
+          <div><strong>Last Calibration:</strong> 2025-08-15</div>
+        </div>
+        <div class="checklist-progress" id="progressText">0/6 checks completed</div>
+        <form id="checklistForm" class="checklist-form">
+          <!-- Checklist items will be loaded here dynamically -->
+        </form>
+        <button class="proceed-btn" id="proceedBtn" disabled>Proceed</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Show current time in header
+    function updateTime() {
+      document.getElementById('currentTime').textContent = new Date().toLocaleString();
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Get OP id from URL parameter
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+    const opId = getQueryParam('opid');
+    if (!opId) {
+      alert('Operator ID not found. Redirecting to homepage.');
+      window.location.href = 'homepage.html';
+    } else {
+      document.getElementById('operatorId').textContent = opId;
+    }
+
+    var proceedBtn = document.getElementById('proceedBtn');
+    var progressText = document.getElementById('progressText');
+
+    // Fetch checklist items from backend
+    function loadChecklist(opId) {
+      fetch(`http://localhost:5000/api/checklist?opid=${encodeURIComponent(opId)}`)
+        .then(res => res.json())
+        .then(data => {
+          const form = document.getElementById('checklistForm');
+          form.innerHTML = '';
+          data.items.forEach((item, idx) => {
+            const label = document.createElement('label');
+            label.className = 'checklist-item';
+            label.innerHTML = `<input type="checkbox" class="checkItem"> ${item}`;
+            form.appendChild(label);
+          });
+          // Change legend based on machine type
+          const legend = document.getElementById('checklistLegend');
+          if (opId === 'OP02') {
+            legend.textContent = 'LVDT - Pre-Operation Checklist';
+          } else {
+            legend.textContent = 'CNC - Pre-Operation Checklist';
+          }
+          setupChecklistLogic();
+        });
+    }
+
+    function setupChecklistLogic() {
+      var checkItems = document.querySelectorAll('.checkItem');
+      function updateProceedState() {
+        const checkedCount = Array.from(checkItems).filter(item => item.checked).length;
+        progressText.textContent = `${checkedCount}/${checkItems.length} checks completed`;
+        proceedBtn.disabled = checkedCount !== checkItems.length;
+      }
+      checkItems.forEach(item => item.addEventListener('change', updateProceedState));
+      proceedBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = `homepage.html?opid=${encodeURIComponent(opId)}`;
+      });
+      updateProceedState();
+    }
+
+    // Reflect login status
+    if (localStorage.getItem('isAdmin') === 'true') {
+      document.getElementById('loginStatus').innerHTML = 'Logged in as <strong>Admin</strong>';
+    } else {
+      document.getElementById('loginStatus').innerHTML = 'Logged in as <strong>User</strong>';
+    }
+    // Load checklist on page load
+    loadChecklist(opId);
+  </script>
+</body>
+</html>

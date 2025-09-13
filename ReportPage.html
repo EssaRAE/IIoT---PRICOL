@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alarm Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f4f6fb;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: #232f3e;
+      color: #fff;
+      padding: 24px 40px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .main {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+    .sidebar {
+      background: #232f3e;
+      color: #fff;
+      width: 260px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.07);
+    }
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #ffffff;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar ul li {
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .sidebar ul li:hover {
+      color: #ffd369;
+    }
+    .dashboard-content {
+      flex: 1;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 16px;
+      min-height: 0;
+    }
+    .alarms-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 0;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin: 0 0 18px 0;
+      color: #232f3e;
+      font-weight: 700;
+      text-align: left;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+      background: #f7f8fa;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.98rem;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 18px 18px;
+      text-align: left;
+    }
+    th:nth-child(4), td:nth-child(4) {
+      width: 220px;
+      min-width: 180px;
+      max-width: 320px;
+    }
+    th:nth-child(5), td:nth-child(5) {
+      width: 320px;
+      min-width: 220px;
+      max-width: 480px;
+    }
+    th {
+      background: #232f3e;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    td input[type='text'] {
+      width: 90%;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #cfd8dc;
+      font-size: 0.97rem;
+    }
+    td button {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      background: #4e54c8;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.97rem;
+      transition: background 0.2s;
+    }
+    td button:hover {
+      background: #232f3e;
+    }
+    @media (max-width: 1200px) {
+      .dashboard-content {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 8px;
+      }
+      .sidebar {
+        width: 120px;
+        padding: 8px 4px;
+      }
+    }
+    @media (max-width: 800px) {
+      .main {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 2px;
+      }
+      .dashboard-content {
+        padding: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span>🚨 Alarm Events</span>
+    <span id="datetime"></span>
+  </div>
+  <div class="main">
+    <nav class="sidebar">
+      <div>
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="homepage.html" style="color:inherit;text-decoration:none;">Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <span style="font-size:0.95rem;" id="loginStatus">Logged in as <strong>Admin</strong></span>
+      </div>
+    </nav>
+    <div class="dashboard-content">
+      <div class="alarms-card">
+        <h2>Alarm Events</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Machine</th>
+              <th>Alarm Type</th>
+              <th>Code</th>
+              <th>Time</th>
+              <th>Remark</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="alarmTable">
+            <tr>
+              <td>M01</td>
+              <td>No Cooling</td>
+              <td>3713</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M02</td>
+              <td>Jammed Pipe</td>
+              <td>8319</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M03</td>
+              <td>Lost Piece</td>
+              <td>1731</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M04</td>
+              <td>Tear Off Pipe</td>
+              <td>1733</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M05</td>
+              <td>Status Request</td>
+              <td>8700</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M06</td>
+              <td>Calibration Limit Exceeded</td>
+              <td>9001</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M07</td>
+              <td>Life Cycle End</td>
+              <td>9900</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M08</td>
+              <td>Sensor Fault</td>
+              <td>8800</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+            <tr>
+              <td>M09</td>
+              <td>Power Failure</td>
+              <td>8999</td>
+              <td><span class="eventTime"></span></td>
+              <td><input type="text" placeholder="Type remark..." class="remarkInput"></td>
+              <td><button onclick="sendMail(this)">Send Mail</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Show current date/time in header
+    function updateDateTime() {
+      document.getElementById('datetime').textContent = new Date().toLocaleString();
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Set current time for each event row
+    document.querySelectorAll('.eventTime').forEach(function(span) {
+      span.textContent = new Date().toLocaleString();
+    });
+
+    // Reflect login status
+    if (localStorage.getItem('isAdmin') === 'true') {
+      document.getElementById('loginStatus').innerHTML = 'Logged in as <strong>Admin</strong>';
+    } else {
+      document.getElementById('loginStatus').innerHTML = 'Logged in as <strong>User</strong>';
+    }
+
+    // Send mail function
+    function sendMail(btn) {
+      const row = btn.closest('tr');
+      const machine = row.children[0].textContent;
+      const alarmType = row.children[1].textContent;
+      const code = row.children[2].textContent;
+      const time = row.children[3].textContent;
+      const remark = row.querySelector('.remarkInput').value;
+
+      fetch('http://localhost:5000/api/send-alarm-mail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ machine, alarmType, code, time, remark })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Mail sent to team!');
+        } else {
+          alert('Error sending mail: ' + (data.error || 'Unknown error'));
+        }
+      });
+    }
+  </script>
+</body>
+</html>

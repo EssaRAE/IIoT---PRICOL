@@ -52,6 +52,3 @@ Developed in collaboration with **PRICOL Limited**.
 - **Frontend**: React.js, Grafana  
 - **ML/Analytics**: Scikit-learn, TensorFlow, XGBoost  
 
----
-
-## 📂 Project Structure  
